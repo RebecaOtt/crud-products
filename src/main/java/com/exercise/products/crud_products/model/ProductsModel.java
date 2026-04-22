@@ -1,10 +1,30 @@
 package com.exercise.products.crud_products.model;
 
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+@Entity
 public class ProductsModel {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+
+    private BigDecimal price;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updateAt;
+
+    public ProductsModel() {
+    }
 
     public ProductsModel(Long id, String name, BigDecimal price) {
         this.id = id;
@@ -19,15 +39,6 @@ public class ProductsModel {
         this.createdAt = LocalDateTime.now();
     }
 
-    private Long id;
-
-    private String name;
-
-    private BigDecimal price;
-
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updateAt;
 
     public Long getId() {
         return id;
