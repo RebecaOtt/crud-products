@@ -1,10 +1,7 @@
 package com.exercise.products.crud_products.model;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -30,13 +27,11 @@ public class ProductsModel {
         this.id = id;
         this.name = name;
         this.price = price;
-        this.createdAt = LocalDateTime.now();
     }
 
     public ProductsModel(String name, BigDecimal price) {
         this.name = name;
         this.price = price;
-        this.createdAt = LocalDateTime.now();
     }
 
 
@@ -68,16 +63,18 @@ public class ProductsModel {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    @PrePersist
+    public void setCreatedAt() {
+        this.createdAt = LocalDateTime.now();
     }
 
     public LocalDateTime getUpdateAt() {
         return updateAt;
     }
 
-    public void setUpdateAt(LocalDateTime updateAt) {
-        this.updateAt = updateAt;
+    @PreUpdate
+    public void setUpdateAt() {
+        this.updateAt = LocalDateTime.now();
     }
 
     @Override
