@@ -23,8 +23,13 @@ public class ProductsRepository {
     }
 
     public ProductsModel findById(Long id) {
-        return products.stream().filter(products ->
-                products.getId().equals(id)).findFirst().get();
+        try {
+            return products.stream().filter(products ->
+                    products.getId().equals(id)).findFirst().orElseThrow(()->
+                    new ClassNotFoundException("Product not found!!"));
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public ProductsModel create(ProductsModel productsModel) {
@@ -34,7 +39,7 @@ public class ProductsRepository {
     }
 
     public ProductsModel update(ProductsModel productsModel) {
-        ProductsModel oldProductsModel = products.stream().filter(products -> products.getId().equals(productsModel.getId())).findFirst().get();
+        ProductsModel oldProductsModel = this.findById(productsModel.getId());
         products.remove(oldProductsModel);
 
         productsModel.setUpdateAt(LocalDateTime.now());
@@ -44,7 +49,7 @@ public class ProductsRepository {
     }
 
     public ProductsModel updateName(Long id, String name) {
-        ProductsModel productsModel = products.stream().filter(product -> product.getId().equals(id)).findFirst().get();
+        ProductsModel productsModel = this.findById(id);
         productsModel.setName(name);
 
         productsModel.setUpdateAt(LocalDateTime.now());
@@ -53,14 +58,14 @@ public class ProductsRepository {
     }
 
     public ProductsModel updatePrice(Long id, BigDecimal price) {
-        ProductsModel productsModel = products.stream().filter(product -> product.getId().equals(id)).findFirst().get();
+        ProductsModel productsModel = this.findById(id);
         productsModel.setPrice(price);
         productsModel.setUpdateAt(LocalDateTime.now());
         return productsModel;
     }
 
     public void deleted(Long id) {
-        ProductsModel productsModel = products.stream().filter(products -> products.getId().equals(id)).findFirst().get();
+        ProductsModel productsModel = this.findById(id);
         products.remove(productsModel);
     }
 }
