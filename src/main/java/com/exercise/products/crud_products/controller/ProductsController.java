@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -21,8 +22,8 @@ public class ProductsController {
     private ProductsService productsService;
 
     @GetMapping
-    public ResponseEntity<List<ProductsDTORes>> findAllProducts(){
-        List<ProductsDTORes> list = this.productsService.findAllProducts();
+    public ResponseEntity<List<ProductsDTORes>> findAllProducts(@RequestParam(required = false)LocalDateTime start, @RequestParam(required = false) LocalDateTime end){
+        List<ProductsDTORes> list = this.productsService.findAllProducts(start, end);
         return ResponseEntity.ok(list);
     }
 

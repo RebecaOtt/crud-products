@@ -8,6 +8,7 @@ import com.exercise.products.crud_products.repository.ProductsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -15,8 +16,13 @@ public class ProductsService {
     @Autowired
     private ProductsRepository productsRepository;
 
-    public List<ProductsDTORes> findAllProducts(){
-        List<ProductsModel> list = this.productsRepository.findAll();
+    public List<ProductsDTORes> findAllProducts(LocalDateTime start, LocalDateTime end){
+        List<ProductsModel> list;
+        if (start != null) {
+            list = this.productsRepository.findByCreatedAtBetween(start, end);
+        } else {
+            list = this.productsRepository.findAll();
+        }
         list.forEach(System.out::println);
         return list.stream().map(ProductsDTORes::ModelToDTO).toList();
     }
@@ -38,18 +44,17 @@ public class ProductsService {
     }
 
     public ProductsDTORes updateNameOrPrice(Long id, ProductsPatchDTOReq productsPatchDTOReq) {
-        ProductsModel productsModelRes = null;
-
         ProductsModel productsModel = this.findByIdEntity(id);
-        if (productsPatchDTOReq.name() != null) {
+
+        if (productsPatchDTOReq.name() != null){
             productsModel.setName(productsPatchDTOReq.name());
-            productsModelRes = this.productsRepository.save(productsModel);
         }
-        if (productsPatchDTOReq.price() != null) {
+        if (productsPatchDTOReq.price() != null){
             productsModel.setPrice(productsPatchDTOReq.price());
-            productsModelRes = this.productsRepository.save(productsModel);
         }
-        return ProductsDTORes.ModelToDTO(productsModelRes);
+
+        ProductsModel updateProduct = this.productsRepository.save(productsModel);
+        return ProductsDTORes.ModelToDTO(updateProduct);
     }
 
     public void deleted(Long id) {
